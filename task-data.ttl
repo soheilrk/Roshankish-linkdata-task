@@ -1,0 +1,110 @@
+@prefix :     <https://example.org/link-dat/> .
+@prefix vivo: <http://vivoweb.org/ontology/core#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix bfo:  <http://purl.obolibrary.org/obo/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+
+#################################################################
+# Local properties
+#################################################################
+
+# VIVO does not provide a suitable publication-level property
+# for the peer-reviewed status required by the task.
+:peerReviewed
+    a owl:DatatypeProperty ;
+    rdfs:label "peer reviewed"@en ;
+    rdfs:domain bibo:Article ;
+    rdfs:range xsd:boolean .
+
+# Local property for the supplied Open Access status.
+:openAccessStatus
+    a owl:DatatypeProperty ;
+    rdfs:label "open access status"@en ;
+    rdfs:domain bibo:Article ;
+    rdfs:range xsd:string .
+
+
+#################################################################
+# Person
+#################################################################
+
+:anna-mueller
+    a foaf:Person ;
+    rdfs:label "Dr. Anna Müller" ;
+    vivo:orcidId <https://orcid.org/0000-1111-2222-3333> .
+
+
+#################################################################
+# Organization
+#################################################################
+
+:university-of-technology
+    a foaf:Organization ;
+    rdfs:label "University of Technology" ;
+    vivo:rorId "https://ror.org/012345678" .
+
+
+#################################################################
+# Organizational unit
+#################################################################
+
+:department-software-development
+    a vivo:AcademicDepartment ;
+    rdfs:label "Department of Software Development" ;
+    bfo:BFO_0000050 :university-of-technology .
+
+
+#################################################################
+# Position / organizational affiliation
+#################################################################
+
+:position-anna-mueller
+    a vivo:Position ;
+    vivo:relates :anna-mueller ;
+    vivo:relates :department-software-development .
+
+
+#################################################################
+# Publication venue
+#################################################################
+
+:journal-information-science
+    a bibo:Journal ;
+    rdfs:label "Journal of Information Science" .
+
+
+#################################################################
+# Publication
+#################################################################
+
+:publication-001
+    a bibo:Article ;
+    rdfs:label "Open Research Information in Practice" ;
+    bibo:doi "10.1234/example.2026.001" ;
+    vivo:dateTimeValue :publication-001-date ;
+    vivo:hasPublicationVenue :journal-information-science ;
+    :peerReviewed true ;
+    :openAccessStatus "Gold" .
+
+
+#################################################################
+# Publication date
+#################################################################
+
+:publication-001-date
+    a vivo:DateTimeValue ;
+    vivo:dateTime "2026-01-01T00:00:00"^^xsd:dateTime .
+
+
+#################################################################
+# Authorship
+#################################################################
+
+:authorship-anna-publication-001
+    a vivo:Authorship ;
+    vivo:relates :anna-mueller ;
+    vivo:relates :publication-001 .

@@ -1,0 +1,27 @@
+PREFIX :     <https://example.org/link-dat/>
+PREFIX vivo: <http://vivoweb.org/ontology/core#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?person ?personName
+       (COUNT(DISTINCT ?publication) AS ?numberOfPeerReviewedPublications)
+WHERE {
+    # Find persons and their publications through authorship
+    ?authorship a vivo:Authorship ;
+                vivo:relates ?person ;
+                vivo:relates ?publication .
+
+    # Get the person's name
+    ?person a foaf:Person ;
+            rdfs:label ?personName .
+
+    # Select only peer-reviewed articles
+    ?publication a bibo:Article ;
+                 :peerReviewed true ;
+                 vivo:hasPublicationVenue ?venue .
+
+    # Restrict to the specified publication venue
+    ?venue rdfs:label "Journal of Information Science" .
+}
+GROUP BY ?person ?personName

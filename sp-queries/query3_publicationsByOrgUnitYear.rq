@@ -1,0 +1,35 @@
+PREFIX :     <https://example.org/link-dat/>
+PREFIX vivo: <http://vivoweb.org/ontology/core#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?organizationalUnit
+       (COUNT(DISTINCT ?publication) AS ?numberOfPublications)
+WHERE {
+    # Find publication and its author
+    ?authorship a vivo:Authorship ;
+                vivo:relates ?person ;
+                vivo:relates ?publication .
+
+    ?person a foaf:Person .
+
+    ?publication a bibo:Article ;
+                 vivo:dateTimeValue ?dateValue .
+
+    # Find the person's organizational unit through their position
+    ?position a vivo:Position ;
+              vivo:relates ?person ;
+              vivo:relates ?orgUnit .
+
+    ?orgUnit a vivo:AcademicDepartment ;
+             rdfs:label ?organizationalUnit .
+
+    # Get the publication date
+    ?dateValue vivo:dateTime ?date .
+
+    # Restrict the result to 2026
+    FILTER(YEAR(?date) = 2026)
+}
+GROUP BY ?organizationalUnit
+ORDER BY ?organizationalUnit
